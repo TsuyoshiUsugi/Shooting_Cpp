@@ -7,8 +7,9 @@
 //外側の壁用の値
 RECT rect;
 const tnl::Vector3 outer_box_pos = {650, 350, 0};
-const tnl::Vector3 outer_box_size = {900, 650, 0};
+const tnl::Vector3 outer_box_size = {900, 700, 0};
 
+//playerの設定
 Player player;
 
 //------------------------------------------------------------------------------------------------------------
@@ -28,8 +29,19 @@ void gameStart(){
 void gameMain(float delta_time) {
 	//外枠を表示する
 	DrawBoxEx(outer_box_pos, outer_box_size.x, outer_box_size.y, false, -1);
-	
-	DrawGraph(outer_box_pos.x, outer_box_pos.y, player.player_gpc_hdl_, false);
+
+	//playerの移動処理
+	if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) player.current_player_pos_.x -= player.speed_;
+	if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) player.current_player_pos_.x += player.speed_;
+
+	if (player.current_player_pos_.x > outer_box_pos.x + outer_box_size.x / 2 - 110) {
+		player.current_player_pos_.x = outer_box_pos.x + outer_box_size.x / 2 - 110;
+	}
+
+	if (player.current_player_pos_.x < outer_box_pos.x - outer_box_size.x / 2 + 10) {
+		player.current_player_pos_.x = outer_box_pos.x - outer_box_size.x / 2 + 10;
+	}
+	DrawGraph(player.current_player_pos_.x, player.current_player_pos_.y, player.player_gpc_hdl_, false);
 }
 
 //------------------------------------------------------------------------------------------------------------
