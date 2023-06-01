@@ -9,6 +9,8 @@ public:
 	int speed_ = 10;
 	tnl::Vector3 current_player_pos_ = { 650, 550, 0 };
 
+
+
 	/// <summary>
 	/// ‰Šú‰»ŠÖ”
 	/// </summary>
