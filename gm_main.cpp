@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Bullet.h"
+#include "CollisionDetect.h"
 
 //外側の壁用の値
 RECT rect;
@@ -13,6 +14,7 @@ const tnl::Vector3 OUTER_BOX_SIZE = {900, 750, 0};
 
 //背景の情報
 int BACK_GROUND_GPC_HUNDLE[] = {0, 0};
+int back_ground_speed = 10;
 tnl::Vector3 back_ground_offset = { 200, 0, 0 };
 
 //Playerの移動オフセット
@@ -31,9 +33,6 @@ Bullet bullet;
 // ゲーム起動時に１度だけ実行されます
 void gameStart(){
 	srand(time(0));
-
-	//うまく真ん中が取れなかった
-	//GetClientRect(GetMainWindowHandle(), &rect);
 	
 	//画像ロード処理
 	player.player_gpc_hdl_ = LoadGraph("graphics/Player.png");
@@ -67,12 +66,9 @@ void CheckPos()
 	}
 
 	//背景画像の流れる処理
-	back_ground_offset.y += 10;
-
-	if (back_ground_offset.y > OUTER_BOX_SIZE.y)
-	{
-		back_ground_offset.y = 0;
-	}
+	back_ground_offset.y += back_ground_speed;
+	if (back_ground_offset.y > OUTER_BOX_SIZE.y) back_ground_offset.y = 0;
+	
 }
 
 /// <summary>
@@ -116,6 +112,23 @@ void Input()
 	}
 }
 
+/// <summary>
+/// 衝突判定を行う
+/// </summary>
+void Hit()
+{
+	//敵の情報
+	int enemy_size_x = 0;
+	int enemy_size_y = 0;
+	GetGraphSize(enemy.enemy_gpc_hdl_, &enemy_size_x, &enemy_size_y);
+	tnl::Vector3 enemy_center_pos = {enemy.pos_.x + enemy_size_x, enemy.pos_.y + enemy_size_y, 0};
+
+	//弾の情報
+	int bullet_size_x = 0;
+	int bullet_size_y = 0;
+	GetGraphSize(bullet.bullet_gpc_hdl_, &bullet_size_x, &bullet_size_y);
+	tnl::Vector3 bullet_center_pos = {bullet.pos_.x + bullet_size_x, bullet.pos_.y + bullet_size_y, 0};
+}
 
 //------------------------------------------------------------------------------------------------------------
 // 毎フレーム実行されます
@@ -132,6 +145,8 @@ void gameMain(float delta_time) {
 	CheckPos();
 	
 	DrawOBJ();
+
+	Hit();
 }
 
 //------------------------------------------------------------------------------------------------------------
