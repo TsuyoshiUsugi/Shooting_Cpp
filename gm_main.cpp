@@ -17,6 +17,9 @@ int BACK_GROUND_GPC_HUNDLE[] = {0, 0};
 int back_ground_speed = 10;
 tnl::Vector3 back_ground_offset = { 200, 0, 0 };
 
+//ゲーム全体の情報
+int score = 0;
+
 //Playerの移動オフセット
 const float RIGHT_OFFSET = 110;
 const float LEFT_OFFSET = 10;
@@ -135,7 +138,7 @@ void Hit()
 void gameMain(float delta_time) {
 
 	//敵移動処理
-	enemy.pos_.y += enemy.speed_;
+	//enemy.pos_.y += enemy.speed_;
 
 	//弾移動処理
 	if (bullet.current_bullet_state_ == Bullet::FLYING) bullet.pos_.y -= bullet.speed_;
