@@ -13,12 +13,14 @@ const tnl::Vector3 OUTER_BOX_POS = {650, 350, 0};
 const tnl::Vector3 OUTER_BOX_SIZE = {900, 750, 0};
 
 //背景の情報
-int BACK_GROUND_GPC_HUNDLE[] = {0, 0};
+int back_ground_gpc_hundle[] = {0, 0};
 int back_ground_speed = 10;
 tnl::Vector3 back_ground_offset = { 200, 0, 0 };
 
 //ゲーム全体の情報
 int score = 0;
+float score_pos_x = 1150;
+float score_pos_y = 0;
 
 //Playerの移動オフセット
 const float RIGHT_OFFSET = 110;
@@ -42,9 +44,9 @@ void gameStart(){
 	enemy.enemy_gpc_hdl_ = LoadGraph("graphics/Enemy.bmp");
 	bullet.bullet_gpc_hdl_ = LoadGraph("graphics/red1.bmp");
 
-	for (int i = 0; i < sizeof(BACK_GROUND_GPC_HUNDLE) / sizeof(BACK_GROUND_GPC_HUNDLE[0]); i++)
+	for (int i = 0; i < sizeof(back_ground_gpc_hundle) / sizeof(back_ground_gpc_hundle[0]); i++)
 	{
-		BACK_GROUND_GPC_HUNDLE[i] = LoadGraph("graphics/space_star.png");
+		back_ground_gpc_hundle[i] = LoadGraph("graphics/space_star.png");
 	}
 }
 
@@ -82,8 +84,11 @@ void DrawOBJ()
 {
 	//背景の描画処理
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	DrawRectGraph(back_ground_offset.x, back_ground_offset.y,0, 0, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, BACK_GROUND_GPC_HUNDLE[0], false, false);
-	DrawRectGraph(back_ground_offset.x, back_ground_offset.y - OUTER_BOX_SIZE.y,0, 0, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, BACK_GROUND_GPC_HUNDLE[1], false, false);
+	DrawRectGraph(back_ground_offset.x, back_ground_offset.y,0, 0, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, back_ground_gpc_hundle[0], false, false);
+	DrawRectGraph(back_ground_offset.x, back_ground_offset.y - OUTER_BOX_SIZE.y,0, 0, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, back_ground_gpc_hundle[1], false, false);
+
+	//スコアの表示
+	DrawStringEx(score_pos_x, score_pos_y, -1, "score : %d", score);
 
 	//弾の描写
 	DrawGraph(bullet.pos_.x + NOZLE_OFFSET, bullet.pos_.y, bullet.bullet_gpc_hdl_, false);
@@ -157,9 +162,9 @@ void gameMain(float delta_time) {
 
 	CheckPos();
 	
-	DrawOBJ();
-
 	Hit();
+
+	DrawOBJ();
 }
 
 //------------------------------------------------------------------------------------------------------------
