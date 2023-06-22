@@ -117,6 +117,7 @@ void Input()
 
 /// <summary>
 /// 衝突判定を行う
+/// それぞれの中心点の座標を取得し、その差の絶対値が各図形の縦横の和の範囲内なら当たり
 /// </summary>
 void Hit()
 {
@@ -124,13 +125,22 @@ void Hit()
 	int enemy_size_x = 0;
 	int enemy_size_y = 0;
 	GetGraphSize(enemy.enemy_gpc_hdl_, &enemy_size_x, &enemy_size_y);
-	tnl::Vector3 enemy_center_pos = {enemy.pos_.x + enemy_size_x, enemy.pos_.y + enemy_size_y, 0};
+	tnl::Vector3 enemy_center_pos = {enemy.pos_.x + enemy_size_x / 2, enemy.pos_.y + enemy_size_y / 2, 0};
 
 	//弾の情報
 	int bullet_size_x = 0;
 	int bullet_size_y = 0;
 	GetGraphSize(bullet.bullet_gpc_hdl_, &bullet_size_x, &bullet_size_y);
-	tnl::Vector3 bullet_center_pos = {bullet.pos_.x + bullet_size_x, bullet.pos_.y + bullet_size_y, 0};
+	tnl::Vector3 bullet_center_pos = {bullet.pos_.x + bullet_size_x / 2, bullet.pos_.y + bullet_size_y / 2, 0};
+
+	if (std::abs(enemy_center_pos.x - bullet_center_pos.x) < enemy_size_x / 2 + bullet_size_x / 2)
+	{
+		if (std::abs(enemy_center_pos.y - bullet_center_pos.y) < enemy_size_y / 2 + bullet_size_y / 2)
+		{
+			enemy.enemy_gpc_hdl_ = 0;
+			score++;
+		}
+	}
 }
 
 //------------------------------------------------------------------------------------------------------------
