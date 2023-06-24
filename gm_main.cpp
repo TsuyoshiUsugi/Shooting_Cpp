@@ -35,7 +35,7 @@ tnl::Vector3 originPos = tnl::Vector3(650, 550, 0);
 Player player = Player(3, 4, originPos);
 
 Enemy enemy = Enemy(1, 1, tnl::Vector3(500, 0, 0));
-Bullet bullet;
+Bullet bullet = Bullet(1, 1);
 
 //------------------------------------------------------------------------------------------------------------
 // ƒQ[ƒ€‹N“®‚É‚P“x‚¾‚¯Às‚³‚ê‚Ü‚·
@@ -45,7 +45,7 @@ void gameStart(){
 	//‰æ‘œƒ[ƒhˆ—
 	player.setPlayerGpcHdl();
 	enemy.setGpcHdl();
-	bullet.bullet_gpc_hdl_ = LoadGraph("graphics/red1.bmp");
+	bullet.SetGpcHdl();
 
 	for (int i = 0; i < sizeof(back_ground_gpc_hundle) / sizeof(back_ground_gpc_hundle[0]); i++)
 	{
@@ -68,9 +68,9 @@ void CheckPos()
 	}
 
 	//’e‚ª‰æ–ÊŠO‚Éo‚½‚ç
-	if (bullet.pos_.y < - BULLET_SIZE_Y)
+	if (bullet.getPos().y < -BULLET_SIZE_Y)
 	{
-		bullet.current_bullet_state_ = Bullet::WAITING;
+		bullet.SwitchState(BulletState::WAITING);
 	}
 
 	//”wŒi‰æ‘œ‚Ì—¬‚ê‚éˆ—
@@ -94,7 +94,7 @@ void DrawOBJ()
 	DrawStringEx(score_pos_x, score_pos_y, -1, "score : %d", score);
 
 	//’e‚Ì•`Ê
-	DrawGraph(bullet.pos_.x + NOZLE_OFFSET, bullet.pos_.y, bullet.bullet_gpc_hdl_, false);
+	DrawGraph(bullet.getPos().x + NOZLE_OFFSET, bullet.getPos().y, bullet.getGpcHdl(), false);
 	
 	//ŠO˜g‚ğ•\¦‚·‚é
 	DrawBoxEx(OUTER_BOX_POS, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, false, -1);
@@ -113,13 +113,13 @@ void DrawOBJ()
 void Input()
 {
 	//player‚ÌˆÚ“®ˆ—
-	if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) player.move(false);
 	if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) player.move(true);
+	if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) player.move(false);
 
 	//ËŒ‚ˆ—
-	if (tnl::Input::IsKeyDown(eKeys::KB_SPACE) && bullet.current_bullet_state_ == Bullet::WAITING) {
-		bullet.pos_ = player.getPos();
-		bullet.current_bullet_state_ = Bullet::FLYING;
+	if (tnl::Input::IsKeyDown(eKeys::KB_SPACE) && bullet.currentState() == BulletState::WAITING) {
+		bullet.setPos(player.getPos());
+		bullet.SwitchState(BulletState::FLYING);
 	}
 }
 
@@ -138,14 +138,14 @@ void Hit()
 	//’e‚Ìî•ñ
 	int bullet_size_x = 0;
 	int bullet_size_y = 0;
-	GetGraphSize(bullet.bullet_gpc_hdl_, &bullet_size_x, &bullet_size_y);
-	tnl::Vector3 bullet_center_pos = {bullet.pos_.x + bullet_size_x / 2, bullet.pos_.y + bullet_size_y / 2, 0};
+	GetGraphSize(bullet.getGpcHdl(), &bullet_size_x, &bullet_size_y);
+	tnl::Vector3 bullet_center_pos = {bullet.getPos().x + bullet_size_x / 2, bullet.getPos().y + bullet_size_y / 2, 0};
 
 	if (std::abs(enemy_center_pos.x - bullet_center_pos.x) < enemy_size_x / 2 + bullet_size_x / 2)
 	{
 		if (std::abs(enemy_center_pos.y - bullet_center_pos.y) < enemy_size_y / 2 + bullet_size_y / 2)
 		{
-			enemy.hit(bullet.damage_);
+			enemy.hit(bullet.getBulletDamage());
 			score++;
 		}
 	}
@@ -159,7 +159,7 @@ void gameMain(float delta_time) {
 	enemy.move();
 
 	//’eˆÚ“®ˆ—
-	if (bullet.current_bullet_state_ == Bullet::FLYING) bullet.pos_.y -= bullet.speed_;
+	if (bullet.currentState() == BulletState::FLYING) bullet.move();
 
 	Input();
 
