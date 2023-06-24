@@ -31,8 +31,8 @@ const float NOZLE_OFFSET = 30;
 //弾のサイズ
 const float BULLET_SIZE_Y = 30;
 
-Player player;
 tnl::Vector3 originPos = tnl::Vector3(650, 550, 0);
+Player player = Player(3, 4, originPos);
 
 Enemy enemy;
 Bullet bullet;
@@ -44,7 +44,7 @@ void gameStart(){
 	srand(time(0));
 	
 	//画像ロード処理
-	player = Player(LoadGraph("graphics/Player.png"), 3, 4, originPos);
+	player.setPlayerGpcHdl();
 	enemy.enemy_gpc_hdl_ = LoadGraph("graphics/Enemy.bmp");
 	bullet.bullet_gpc_hdl_ = LoadGraph("graphics/red1.bmp");
 
@@ -61,11 +61,11 @@ void gameStart(){
 void CheckPos()
 {
 	//Playerの位置修正
-	if (player.current_player_pos_.x > OUTER_BOX_POS.x + OUTER_BOX_SIZE.x / 2 - RIGHT_OFFSET) {
-		player.current_player_pos_.x = OUTER_BOX_POS.x + OUTER_BOX_SIZE.x / 2 - RIGHT_OFFSET;
+	if (player.getPos().x > OUTER_BOX_POS.x + OUTER_BOX_SIZE.x / 2 - RIGHT_OFFSET) {
+		player.setPos(OUTER_BOX_POS.x + OUTER_BOX_SIZE.x / 2 - RIGHT_OFFSET, player.getPos().y);
 	}
-	if (player.current_player_pos_.x < OUTER_BOX_POS.x - OUTER_BOX_SIZE.x / 2 + LEFT_OFFSET) {
-		player.current_player_pos_.x = OUTER_BOX_POS.x - OUTER_BOX_SIZE.x / 2 + LEFT_OFFSET;
+	if (player.getPos().x < OUTER_BOX_POS.x - OUTER_BOX_SIZE.x / 2 + LEFT_OFFSET) {
+		player.setPos(OUTER_BOX_POS.x - OUTER_BOX_SIZE.x / 2 + LEFT_OFFSET, player.getPos().y);
 	}
 
 	//弾が画面外に出たら
@@ -105,7 +105,7 @@ void DrawOBJ()
 
 	//Player描画処理
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	DrawGraph(player.current_player_pos_.x, player.current_player_pos_.y, player.player_gpc_hdl_, false);
+	DrawGraph(player.getPos().x, player.getPos().y, player.getPlayerGpcHdl(), false);
 }
 
 /// <summary>
@@ -114,12 +114,12 @@ void DrawOBJ()
 void Input()
 {
 	//playerの移動処理
-	if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) player.current_player_pos_.x -= player.speed_;
-	if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) player.current_player_pos_.x += player.speed_;
+	if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) player.move(false);
+	if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) player.move(true);
 
 	//射撃処理
 	if (tnl::Input::IsKeyDown(eKeys::KB_SPACE) && bullet.current_bullet_state_ == Bullet::WAITING) {
-		bullet.pos_ = player.current_player_pos_;
+		bullet.pos_ = player.getPos();
 		bullet.current_bullet_state_ = Bullet::FLYING;
 	}
 }
