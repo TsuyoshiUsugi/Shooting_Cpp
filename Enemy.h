@@ -9,7 +9,7 @@ public:
 	int speed_ = 10;
 	tnl::Vector3 pos_ = {500, 0, 0};
 
-	void attack();
+	void attack() {};
 
 	void move();
 };

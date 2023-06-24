@@ -1,5 +1,6 @@
 #include <time.h>
 #include <string>
+#include <vector>
 #include "../dxlib_ext/dxlib_ext.h"
 #include "gm_main.h"
 #include "Player.h"
@@ -31,8 +32,11 @@ const float NOZLE_OFFSET = 30;
 const float BULLET_SIZE_Y = 30;
 
 Player player;
+tnl::Vector3 originPos = tnl::Vector3(650, 550, 0);
+
 Enemy enemy;
 Bullet bullet;
+std::vector<Enemy> enemies(2);
 
 //------------------------------------------------------------------------------------------------------------
 // ゲーム起動時に１度だけ実行されます
@@ -40,7 +44,7 @@ void gameStart(){
 	srand(time(0));
 	
 	//画像ロード処理
-	player.player_gpc_hdl_ = LoadGraph("graphics/Player.png");
+	player = Player(LoadGraph("graphics/Player.png"), 3, 4, originPos);
 	enemy.enemy_gpc_hdl_ = LoadGraph("graphics/Enemy.bmp");
 	bullet.bullet_gpc_hdl_ = LoadGraph("graphics/red1.bmp");
 
@@ -153,7 +157,7 @@ void Hit()
 void gameMain(float delta_time) {
 
 	//敵移動処理
-	//enemy.pos_.y += enemy.speed_;
+	enemy.move();
 
 	//弾移動処理
 	if (bullet.current_bullet_state_ == Bullet::FLYING) bullet.pos_.y -= bullet.speed_;
