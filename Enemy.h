@@ -10,5 +10,7 @@ public:
 	tnl::Vector3 pos_ = {500, 0, 0};
 
 	void attack();
+
+	void move();
 };
 
