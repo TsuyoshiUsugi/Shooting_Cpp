@@ -34,9 +34,8 @@ const float BULLET_SIZE_Y = 30;
 tnl::Vector3 originPos = tnl::Vector3(650, 550, 0);
 Player player = Player(3, 4, originPos);
 
-Enemy enemy;
+Enemy enemy = Enemy(1, 1, tnl::Vector3(500, 0, 0));
 Bullet bullet;
-std::vector<Enemy> enemies(2);
 
 //------------------------------------------------------------------------------------------------------------
 // ƒQ[ƒ€‹N“®‚É‚P“x‚¾‚¯Às‚³‚ê‚Ü‚·
@@ -45,7 +44,7 @@ void gameStart(){
 	
 	//‰æ‘œƒ[ƒhˆ—
 	player.setPlayerGpcHdl();
-	enemy.enemy_gpc_hdl_ = LoadGraph("graphics/Enemy.bmp");
+	enemy.setGpcHdl();
 	bullet.bullet_gpc_hdl_ = LoadGraph("graphics/red1.bmp");
 
 	for (int i = 0; i < sizeof(back_ground_gpc_hundle) / sizeof(back_ground_gpc_hundle[0]); i++)
@@ -101,7 +100,7 @@ void DrawOBJ()
 	DrawBoxEx(OUTER_BOX_POS, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, false, -1);
 
 	//“G•`‰æˆ—
-	DrawGraph(enemy.pos_.x, enemy.pos_.y, enemy.enemy_gpc_hdl_, false);
+	DrawGraph(enemy.getPos().x, enemy.getPos().y, enemy.getGpcHdl(), false);
 
 	//Player•`‰æˆ—
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
@@ -133,8 +132,8 @@ void Hit()
 	//“G‚Ìî•ñ
 	int enemy_size_x = 0;
 	int enemy_size_y = 0;
-	GetGraphSize(enemy.enemy_gpc_hdl_, &enemy_size_x, &enemy_size_y);
-	tnl::Vector3 enemy_center_pos = {enemy.pos_.x + enemy_size_x / 2, enemy.pos_.y + enemy_size_y / 2, 0};
+	GetGraphSize(enemy.getGpcHdl(), &enemy_size_x, &enemy_size_y);
+	tnl::Vector3 enemy_center_pos = {enemy.getPos().x + enemy_size_x / 2, enemy.getPos().y + enemy_size_y / 2, 0};
 
 	//’e‚Ìî•ñ
 	int bullet_size_x = 0;
@@ -146,7 +145,7 @@ void Hit()
 	{
 		if (std::abs(enemy_center_pos.y - bullet_center_pos.y) < enemy_size_y / 2 + bullet_size_y / 2)
 		{
-			enemy.enemy_gpc_hdl_ = 0;
+			enemy.hit(bullet.damage_);
 			score++;
 		}
 	}
