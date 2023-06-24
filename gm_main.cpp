@@ -31,9 +31,8 @@ const float NOZLE_OFFSET = 30;
 //íeÇÃÉTÉCÉY
 const float BULLET_SIZE_Y = 30;
 
-tnl::Vector3 originPos = tnl::Vector3(650, 550, 0);
-Player player = Player(3, 4, originPos);
-
+tnl::Vector3 player_origin_pos = tnl::Vector3(650, 550, 0);
+Player player = Player(3, 4, player_origin_pos);
 Enemy enemy = Enemy(1, 1, tnl::Vector3(500, 0, 0));
 Bullet bullet = Bullet(1, 1);
 
