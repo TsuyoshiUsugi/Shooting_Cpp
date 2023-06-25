@@ -2,6 +2,7 @@
 void gameStart();
 void initializeEnemy();
 void gameMain( float delta_time );
+void MovePos();
 void Input();
 void CheckPos();
 void CheckHit();

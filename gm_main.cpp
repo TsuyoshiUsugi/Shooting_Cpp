@@ -56,11 +56,15 @@ void gameStart(){
 	}
 }
 
+/// <summary>
+/// 敵の初期化処理
+/// vectorに格納して画像を設定する
+/// </summary>
 void initializeEnemy()
 {
-	for (size_t i = 0; i < 1; i++)
+	for (size_t i = 0; i < 2; i++)
 	{
-		enemies.push_back(Enemy(1, 1, tnl::Vector3(550, 0, 0)));
+		enemies.push_back(Enemy(1, 1, tnl::Vector3(550 + i * 100, 0, 0)));
 	}
 
 	for (size_t i = 0; i < enemies.size(); i++)
@@ -73,14 +77,7 @@ void initializeEnemy()
 // 毎フレーム実行されます
 void gameMain(float delta_time) {
 
-	//敵移動処理
-	for (size_t i = 0; i < enemies.size(); i++)
-	{
-		enemies[i].move();
-	}
-
-	//弾移動処理
-	if (bullet.currentState() == BulletState::FLYING) bullet.move();
+	MovePos();
 
 	Input();
 
@@ -89,6 +86,21 @@ void gameMain(float delta_time) {
 	CheckHit();
 
 	DrawObj();	//最後に行うこと
+}
+
+/// <summary>
+/// オブジェクトの移動処理
+/// </summary>
+void MovePos()
+{
+	//敵移動処理
+	for (size_t i = 0; i < enemies.size(); i++)
+	{
+		enemies[i].move();
+	}
+
+	//弾移動処理
+	if (bullet.currentState() == BulletState::FLYING) bullet.move();
 }
 
 /// <summary>
