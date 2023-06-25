@@ -35,8 +35,8 @@ const float BULLET_SIZE_Y = 30;
 
 tnl::Vector3 player_origin_pos = tnl::Vector3(650, 550, 0);
 Player player = Player(3, 4, player_origin_pos);
-Enemy enemy = Enemy(1, 1, tnl::Vector3(500, 0, 0));
 Bullet bullet = Bullet(1, 1);
+std::vector<Enemy> enemies;
 
 //------------------------------------------------------------------------------------------------------------
 // ゲーム起動時に１度だけ実行されます
@@ -45,12 +45,66 @@ void gameStart(){
 	
 	//画像ロード処理
 	player.setPlayerGpcHdl();
-	enemy.setGpcHdl();
+
+	initializeEnemy();
+
 	bullet.SetGpcHdl();
 
 	for (int i = 0; i < sizeof(back_ground_gpc_hundle) / sizeof(back_ground_gpc_hundle[0]); i++)
 	{
 		back_ground_gpc_hundle[i] = LoadGraph("graphics/space_star.png");
+	}
+}
+
+void initializeEnemy()
+{
+	for (size_t i = 0; i < 1; i++)
+	{
+		enemies.push_back(Enemy(1, 1, tnl::Vector3(550, 0, 0)));
+	}
+
+	for (size_t i = 0; i < enemies.size(); i++)
+	{
+		enemies[i].setGpcHdl();
+	}
+}
+
+//------------------------------------------------------------------------------------------------------------
+// 毎フレーム実行されます
+void gameMain(float delta_time) {
+
+	//敵移動処理
+	for (size_t i = 0; i < enemies.size(); i++)
+	{
+		enemies[i].move();
+	}
+
+	//弾移動処理
+	if (bullet.currentState() == BulletState::FLYING) bullet.move();
+
+	Input();
+
+	CheckPos();
+	
+	CheckHit();
+
+	DrawObj();	//最後に行うこと
+}
+
+/// <summary>
+/// プレイヤーの入力処理
+/// </summary>
+void Input()
+{
+	//playerの移動処理
+	if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) player.move(true);
+	if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) player.move(false);
+
+	//射撃処理
+	if (tnl::Input::IsKeyDown(eKeys::KB_SPACE) && bullet.currentState() == BulletState::WAITING) {
+		auto shotPos = tnl::Vector3(player.getPos().x + NOZLE_OFFSET, player.getPos().y, 0);
+		bullet.setPos(shotPos);
+		bullet.SwitchState(BulletState::FLYING);
 	}
 }
 
@@ -82,17 +136,46 @@ void CheckPos()
 	game_timer++;
 }
 
-int timerrr = 0;
+/// <summary>
+/// 衝突判定を行う
+/// </summary>
+void CheckHit()
+{
+	//敵の画像サイズを格納する
+	int enemy_size_x = 0;
+	int enemy_size_y = 0;
+
+	//弾の画像サイズを格納する
+	int bullet_size_x = 0;
+	int bullet_size_y = 0;
+	GetGraphSize(bullet.getGpcHdl(), &bullet_size_x, &bullet_size_y);
+	auto bulletPos = bullet.getPos();
+	auto bulletDamage = bullet.getBulletDamage();
+
+	for (size_t i = 0; i < enemies.size(); i++)
+	{
+		GetGraphSize(enemies[i].getGpcHdl(), &enemy_size_x, &enemy_size_y);
+		auto isHit = usl::rectAngleAndRectAngleHitDetect(enemies[i].getPos(), enemy_size_x, enemy_size_y,
+			bulletPos, bullet_size_x, bullet_size_y);
+
+		if (isHit) {
+			enemies[i].hit(bulletDamage);
+			score++;
+		}
+	}
+
+}
+
 /// <summary>
 /// 画面にオブジェクトを表示する関数
 /// 表示する処理をまとめている
 /// </summary>
-void DrawOBJ()
+void DrawObj()
 {
 	//背景の描画処理
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	DrawRectGraph(back_ground_offset.x, back_ground_offset.y,0, 0, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, back_ground_gpc_hundle[0], false, false);
-	DrawRectGraph(back_ground_offset.x, back_ground_offset.y - OUTER_BOX_SIZE.y,0, 0, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, back_ground_gpc_hundle[1], false, false);
+	DrawRectGraph(back_ground_offset.x, back_ground_offset.y, 0, 0, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, back_ground_gpc_hundle[0], false, false);
+	DrawRectGraph(back_ground_offset.x, back_ground_offset.y - OUTER_BOX_SIZE.y, 0, 0, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, back_ground_gpc_hundle[1], false, false);
 
 	//スコアの表示
 	DrawStringEx(score_pos.x, score_pos.y, -1, "score : %d", score);
@@ -102,77 +185,20 @@ void DrawOBJ()
 
 	//開始してからの時間を表示する
 	DrawStringEx(timer_pos.x, timer_pos.y, -1, "Time : %d", game_timer / 60);
-	
+
 	//弾の描写
 	DrawGraph(bullet.getPos().x, bullet.getPos().y, bullet.getGpcHdl(), false);
-	
+
 
 	//敵描画処理
-	DrawGraph(enemy.getPos().x, enemy.getPos().y, enemy.getGpcHdl(), false);
+	for (size_t i = 0; i < enemies.size(); i++)
+	{
+		DrawGraph(enemies[i].getPos().x, enemies[i].getPos().y, enemies[i].getGpcHdl(), false);
+	}
 
 	//Player描画処理
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	DrawGraph(player.getPos().x, player.getPos().y, player.getPlayerGpcHdl(), false);
-}
-
-/// <summary>
-/// プレイヤーの入力処理
-/// </summary>
-void Input()
-{
-	//playerの移動処理
-	if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) player.move(true);
-	if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) player.move(false);
-
-	//射撃処理
-	if (tnl::Input::IsKeyDown(eKeys::KB_SPACE) && bullet.currentState() == BulletState::WAITING) {
-		auto shotPos = tnl::Vector3(player.getPos().x + NOZLE_OFFSET, player.getPos().y, 0);
-		bullet.setPos(shotPos);
-		bullet.SwitchState(BulletState::FLYING);
-	}
-}
-
-/// <summary>
-/// 衝突判定を行う
-/// それぞれの中心点の座標を取得し、その差の絶対値が各図形の縦横の和の範囲内なら当たり
-/// </summary>
-void CheckHit()
-{
-	//敵の情報
-	int enemy_size_x = 0;
-	int enemy_size_y = 0;
-	GetGraphSize(enemy.getGpcHdl(), &enemy_size_x, &enemy_size_y);
-	
-	//弾の情報
-	int bullet_size_x = 0;
-	int bullet_size_y = 0;
-	GetGraphSize(bullet.getGpcHdl(), &bullet_size_x, &bullet_size_y);
-	auto isHit = usl::rectAngleAndRectAngleHitDetect(enemy.getPos(), enemy_size_x, enemy_size_y,
-		bullet.getPos(), bullet_size_x, bullet_size_y);
-
-	if (isHit) {
-		enemy.hit(bullet.getBulletDamage());
-		score++;
-	}
-}
-
-//------------------------------------------------------------------------------------------------------------
-// 毎フレーム実行されます
-void gameMain(float delta_time) {
-
-	//敵移動処理
-	enemy.move();
-
-	//弾移動処理
-	if (bullet.currentState() == BulletState::FLYING) bullet.move();
-
-	Input();
-
-	CheckPos();
-	
-	CheckHit();
-
-	DrawOBJ();	//最後に行うこと
 }
 
 //------------------------------------------------------------------------------------------------------------
