@@ -20,7 +20,7 @@ namespace usl
 		auto xDiff = std::abs(aObjCenterPos.x - bObjCenterPos.x);
 		auto yDiff = std::abs(aObjCenterPos.y - bObjCenterPos.y);
 
-		if (yDiff < aObjSizeY / 2 + bObjSizeY / 2 && xDiff < aObjSizeX / 2 + aObjSizeX / 2) {
+		if (yDiff < aObjSizeY / 2 + bObjSizeY / 2 && xDiff < aObjSizeX / 2 + bObjSizeX / 2) {
 			return true;
 		}
 		else {

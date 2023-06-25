@@ -147,7 +147,8 @@ void Hit()
 		score++;
 	}
 
-	DrawBoxEx();
+	DrawBoxEx(enemy.getPos(), enemy_size_x, enemy_size_y, false, -1);
+	DrawBoxEx(bullet.getPos(), bullet_size_x, bullet_size_y, false, -1);
 }
 
 //------------------------------------------------------------------------------------------------------------
