@@ -21,8 +21,9 @@ tnl::Vector3 back_ground_offset = { 200, 0, 0 };
 
 //ゲーム全体の情報
 int score = 0;
-float score_pos_x = 1150;
-float score_pos_y = 0;
+tnl::Vector3 score_pos = tnl::Vector3(1150, 0, 0);
+int game_timer = 0;
+tnl::Vector3 timer_pos = tnl::Vector3(1150, 100, 0);
 
 //Playerの移動オフセット
 const float RIGHT_OFFSET = 110;
@@ -76,9 +77,12 @@ void CheckPos()
 	//背景画像の流れる処理
 	back_ground_offset.y += back_ground_speed;
 	if (back_ground_offset.y > OUTER_BOX_SIZE.y) back_ground_offset.y = 0;
-	
+
+	//時間計測
+	game_timer++;
 }
 
+int timerrr = 0;
 /// <summary>
 /// 画面にオブジェクトを表示する関数
 /// 表示する処理をまとめている
@@ -91,13 +95,17 @@ void DrawOBJ()
 	DrawRectGraph(back_ground_offset.x, back_ground_offset.y - OUTER_BOX_SIZE.y,0, 0, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, back_ground_gpc_hundle[1], false, false);
 
 	//スコアの表示
-	DrawStringEx(score_pos_x, score_pos_y, -1, "score : %d", score);
+	DrawStringEx(score_pos.x, score_pos.y, -1, "score : %d", score);
 
+	//外枠を表示する
+	DrawBoxEx(OUTER_BOX_POS, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, false, -1);
+
+	//開始してからの時間を表示する
+	DrawStringEx(timer_pos.x, timer_pos.y, -1, "Time : %d", game_timer / 60);
+	
 	//弾の描写
 	DrawGraph(bullet.getPos().x, bullet.getPos().y, bullet.getGpcHdl(), false);
 	
-	//外枠を表示する
-	DrawBoxEx(OUTER_BOX_POS, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, false, -1);
 
 	//敵描画処理
 	DrawGraph(enemy.getPos().x, enemy.getPos().y, enemy.getGpcHdl(), false);
@@ -128,7 +136,7 @@ void Input()
 /// 衝突判定を行う
 /// それぞれの中心点の座標を取得し、その差の絶対値が各図形の縦横の和の範囲内なら当たり
 /// </summary>
-void Hit()
+void CheckHit()
 {
 	//敵の情報
 	int enemy_size_x = 0;
@@ -146,9 +154,6 @@ void Hit()
 		enemy.hit(bullet.getBulletDamage());
 		score++;
 	}
-
-	DrawBoxEx(enemy.getPos(), enemy_size_x, enemy_size_y, false, -1);
-	DrawBoxEx(bullet.getPos(), bullet_size_x, bullet_size_y, false, -1);
 }
 
 //------------------------------------------------------------------------------------------------------------
@@ -165,9 +170,9 @@ void gameMain(float delta_time) {
 
 	CheckPos();
 	
+	CheckHit();
 
 	DrawOBJ();	//最後に行うこと
-	Hit();
 }
 
 //------------------------------------------------------------------------------------------------------------
