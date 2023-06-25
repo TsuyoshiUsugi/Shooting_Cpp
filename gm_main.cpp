@@ -145,9 +145,6 @@ void Hit()
 	auto xDiff = std::abs(enemy_center_pos.x - bullet_center_pos.x);
 	auto yDiff = std::abs(enemy_center_pos.y - bullet_center_pos.y);
 
-	DrawBoxEx(enemy_center_pos, 100, 100, false, -1);
-	DrawBoxEx(bullet_center_pos, 32, 32, false, -1);
-
 	if (yDiff < enemy_size_y / 2 + bullet_size_y / 2 &&
 	xDiff < enemy_size_x / 2 + bullet_size_x / 2) {
 		enemy.hit(bullet.getBulletDamage());
