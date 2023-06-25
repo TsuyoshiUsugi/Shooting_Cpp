@@ -134,23 +134,20 @@ void Hit()
 	int enemy_size_x = 0;
 	int enemy_size_y = 0;
 	GetGraphSize(enemy.getGpcHdl(), &enemy_size_x, &enemy_size_y);
-	tnl::Vector3 enemy_center_pos = {enemy.getPos().x + static_cast<float>(enemy_size_x) / 2, enemy.getPos().y + static_cast<float>(enemy_size_y) / 2, 0};
-
+	
 	//íeÇÃèÓïÒ
 	int bullet_size_x = 0;
 	int bullet_size_y = 0;
 	GetGraphSize(bullet.getGpcHdl(), &bullet_size_x, &bullet_size_y);
-	tnl::Vector3 bullet_center_pos = {bullet.getPos().x + static_cast<float>(bullet_size_x) / 2, bullet.getPos().y + static_cast<float>(bullet_size_y) / 2, 0};
+	auto isHit = usl::rectAngleAndRectAngleHitDetect(enemy.getPos(), enemy_size_x, enemy_size_y,
+		bullet.getPos(), bullet_size_x, bullet_size_y);
 
-	auto xDiff = std::abs(enemy_center_pos.x - bullet_center_pos.x);
-	auto yDiff = std::abs(enemy_center_pos.y - bullet_center_pos.y);
-
-	if (yDiff < enemy_size_y / 2 + bullet_size_y / 2 &&
-		xDiff < enemy_size_x / 2 + bullet_size_x / 2) {
+	if (isHit) {
 		enemy.hit(bullet.getBulletDamage());
 		score++;
 	}
-	
+
+	DrawBoxEx();
 }
 
 //------------------------------------------------------------------------------------------------------------
@@ -167,9 +164,9 @@ void gameMain(float delta_time) {
 
 	CheckPos();
 	
-	Hit();
 
-	DrawOBJ();
+	DrawOBJ();	//ç≈å„Ç…çsÇ§Ç±Ç∆
+	Hit();
 }
 
 //------------------------------------------------------------------------------------------------------------
