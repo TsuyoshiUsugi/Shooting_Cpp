@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "Bullet.h"
 #include "CollisionDetect.h"
+#include <iostream>
 
 //äOë§ÇÃï«ópÇÃíl
 RECT rect;
@@ -93,7 +94,7 @@ void DrawOBJ()
 	DrawStringEx(score_pos_x, score_pos_y, -1, "score : %d", score);
 
 	//íeÇÃï`é 
-	DrawGraph(bullet.getPos().x + NOZLE_OFFSET, bullet.getPos().y, bullet.getGpcHdl(), false);
+	DrawGraph(bullet.getPos().x, bullet.getPos().y, bullet.getGpcHdl(), false);
 	
 	//äOògÇï\é¶Ç∑ÇÈ
 	DrawBoxEx(OUTER_BOX_POS, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, false, -1);
@@ -117,7 +118,8 @@ void Input()
 
 	//éÀåÇèàóù
 	if (tnl::Input::IsKeyDown(eKeys::KB_SPACE) && bullet.currentState() == BulletState::WAITING) {
-		bullet.setPos(player.getPos());
+		auto shotPos = tnl::Vector3(player.getPos().x + NOZLE_OFFSET, player.getPos().y, 0);
+		bullet.setPos(shotPos);
 		bullet.SwitchState(BulletState::FLYING);
 	}
 }
@@ -132,22 +134,26 @@ void Hit()
 	int enemy_size_x = 0;
 	int enemy_size_y = 0;
 	GetGraphSize(enemy.getGpcHdl(), &enemy_size_x, &enemy_size_y);
-	tnl::Vector3 enemy_center_pos = {enemy.getPos().x + enemy_size_x / 2, enemy.getPos().y + enemy_size_y / 2, 0};
+	tnl::Vector3 enemy_center_pos = {enemy.getPos().x + static_cast<float>(enemy_size_x) / 2, enemy.getPos().y + static_cast<float>(enemy_size_y) / 2, 0};
 
 	//íeÇÃèÓïÒ
 	int bullet_size_x = 0;
 	int bullet_size_y = 0;
 	GetGraphSize(bullet.getGpcHdl(), &bullet_size_x, &bullet_size_y);
-	tnl::Vector3 bullet_center_pos = {bullet.getPos().x + bullet_size_x / 2, bullet.getPos().y + bullet_size_y / 2, 0};
+	tnl::Vector3 bullet_center_pos = {bullet.getPos().x + static_cast<float>(bullet_size_x) / 2, bullet.getPos().y + static_cast<float>(bullet_size_y) / 2, 0};
 
-	if (std::abs(enemy_center_pos.x - bullet_center_pos.x) < enemy_size_x / 2 + bullet_size_x / 2)
-	{
-		if (std::abs(enemy_center_pos.y - bullet_center_pos.y) < enemy_size_y / 2 + bullet_size_y / 2)
-		{
-			enemy.hit(bullet.getBulletDamage());
-			score++;
-		}
+	auto xDiff = std::abs(enemy_center_pos.x - bullet_center_pos.x);
+	auto yDiff = std::abs(enemy_center_pos.y - bullet_center_pos.y);
+
+	DrawBoxEx(enemy_center_pos, 100, 100, false, -1);
+	DrawBoxEx(bullet_center_pos, 32, 32, false, -1);
+
+	if (yDiff < enemy_size_y / 2 + bullet_size_y / 2 &&
+	xDiff < enemy_size_x / 2 + bullet_size_x / 2) {
+		enemy.hit(bullet.getBulletDamage());
+		score++;
 	}
+	
 }
 
 //------------------------------------------------------------------------------------------------------------

@@ -17,7 +17,7 @@ private:
 	BulletState current_bullet_state_ = BulletState::WAITING;
 
 public:
-	Bullet(int damage, int speed) {
+	Bullet(int damage, float speed) {
 		damage_ = damage;
 		speed_ = speed;
 	}
