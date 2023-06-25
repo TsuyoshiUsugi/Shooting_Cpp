@@ -22,8 +22,9 @@ tnl::Vector3 back_ground_offset = { 200, 0, 0 };
 //ゲーム全体の情報
 int score = 0;
 tnl::Vector3 score_pos = tnl::Vector3(1150, 0, 0);
-int game_timer = 0;
+int game_frame_timer = 0;
 tnl::Vector3 timer_pos = tnl::Vector3(1150, 100, 0);
+int enemy_count = 0;
 
 //Playerの移動オフセット
 const float RIGHT_OFFSET = 110;
@@ -62,20 +63,18 @@ void gameStart(){
 /// </summary>
 void initializeEnemy()
 {
-	for (size_t i = 0; i < 2; i++)
-	{
-		enemies.push_back(Enemy(1, 1, tnl::Vector3(550 + i * 100, 0, 0)));
-	}
-
-	for (size_t i = 0; i < enemies.size(); i++)
-	{
-		enemies[i].setGpcHdl();
-	}
+	enemies.push_back(Enemy(1, 1, tnl::Vector3(250, 0, 0)));
+	enemies[0].setGpcHdl();
+	enemy_count++;
 }
 
 //------------------------------------------------------------------------------------------------------------
 // 毎フレーム実行されます
 void gameMain(float delta_time) {
+
+	game_frame_timer++;
+
+	GenerateEnemy();
 
 	MovePos();
 
@@ -86,6 +85,19 @@ void gameMain(float delta_time) {
 	CheckHit();
 
 	DrawObj();	//最後に行うこと
+}
+
+/// <summary>
+/// 敵を生成する
+/// </summary>
+void GenerateEnemy()
+{
+	if (game_frame_timer % 60 * 2 == 0) { //五秒おきに敵を生成する。あとでマジックナンバーを変えること
+		auto pos = enemy_count % 6 * 150;	//6レーンごとに生成
+		enemies.push_back(Enemy(1, 1, tnl::Vector3(250 + pos, 0, 0)));
+		enemies[enemies.size() - 1].setGpcHdl();
+		enemy_count++;
+	}
 }
 
 /// <summary>
@@ -143,9 +155,6 @@ void CheckPos()
 	//背景画像の流れる処理
 	back_ground_offset.y += back_ground_speed;
 	if (back_ground_offset.y > OUTER_BOX_SIZE.y) back_ground_offset.y = 0;
-
-	//時間計測
-	game_timer++;
 }
 
 /// <summary>
@@ -196,7 +205,7 @@ void DrawObj()
 	DrawBoxEx(OUTER_BOX_POS, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, false, -1);
 
 	//開始してからの時間を表示する
-	DrawStringEx(timer_pos.x, timer_pos.y, -1, "Time : %d", game_timer / 60);
+	DrawStringEx(timer_pos.x, timer_pos.y, -1, "Time : %d", game_frame_timer / 60);
 
 	//弾の描写
 	DrawGraph(bullet.getPos().x, bullet.getPos().y, bullet.getGpcHdl(), false);
