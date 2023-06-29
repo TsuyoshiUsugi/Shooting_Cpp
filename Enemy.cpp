@@ -1,11 +1,17 @@
 #include "Enemy.h"
 
-/// <summary>
-/// ˆÚ“®ˆ—
-/// ‰æ–Ê‚µ‚½‚ÉŒü‚©‚Á‚Ä‚Ü‚Á‚·‚®‚·‚·‚Ş
-/// </summary>
+
 void Enemy::move()
 {
 	pos_.y += speed_;
+}
+
+void Enemy::hit(int damage) {
+	hp_ -= damage;
+
+	if (hp_ <= 0) {
+		enemy_gpc_hdl_ = 0;
+		Death();
+	}
 }
 

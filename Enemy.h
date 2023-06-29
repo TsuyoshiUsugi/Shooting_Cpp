@@ -20,7 +20,6 @@ public:
 		speed_ = speed;
 		pos_ = originPos;
 	}
-	
 
 	void setGpcHdl() {
 		enemy_gpc_hdl_ = LoadGraph("graphics/Enemy.bmp");
@@ -34,15 +33,6 @@ public:
 		return damage_;
 	}
 
-	void hit(int damage) {
-		hp_ -= damage;
-
-		if (hp_ <= 0) {
-			enemy_gpc_hdl_ = 0;
-			Death();
-		}
-	}
-
 	tnl::Vector3 getPos() {
 		return pos_;
 	}
@@ -51,8 +41,21 @@ public:
 		pos_ = pos;
 	}
 
-	void attack() {};
+	/// <summary>
+	/// “G‚Ì”í’e‚Ìˆ—
+	/// </summary>
+	/// <param name="damage"></param>
+	void hit(int damage);
 
+	/// <summary>
+	/// UŒ‚ˆ—
+	/// </summary>
+	void attack();
+
+	/// <summary>
+	/// ˆÚ“®ˆ—
+	/// ‰æ–Ê‰º‚ÉŒü‚©‚Á‚Ä‚Ü‚Á‚·‚®‚·‚·‚Ş
+	/// </summary>
 	void move();
 };
 
