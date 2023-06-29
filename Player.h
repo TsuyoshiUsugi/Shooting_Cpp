@@ -40,6 +40,10 @@ public:
 		return isDeath_;
 	}
 
+	int getPlayerHp() {
+		return hp_;
+	}
+
 	/// <summary>
 	/// プレイヤーの位置を設定する
 	/// </summary>

@@ -25,6 +25,7 @@ tnl::Vector3 score_pos = tnl::Vector3(1125, 25, 0);
 int game_frame_timer = 0;
 tnl::Vector3 timer_pos = tnl::Vector3(1125, 0, 0);
 int enemy_count = 0;
+tnl::Vector3 hp_pos = tnl::Vector3(1125, 50, 0);
 
 //Playerの移動オフセット
 const float RIGHT_OFFSET = 110;
@@ -217,6 +218,9 @@ void DrawObj()
 
 	//スコアの表示
 	DrawStringEx(score_pos.x, score_pos.y, -1, "score : %d", score);
+
+	//HPの表示
+	DrawStringEx(hp_pos.x, hp_pos.y, -1, "Hp : %d", player.getPlayerHp());
 
 	//外枠を表示する
 	DrawBoxEx(OUTER_BOX_POS, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, false, -1);
