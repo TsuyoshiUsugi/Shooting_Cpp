@@ -8,9 +8,9 @@ private:
 	int player_gpc_hdl_ = 0;
 	int hp_ = 100;
 	int speed_ = 10;
+	bool isDeath_ = false;
 	tnl::Vector3 current_player_pos_ = { 650, 550, 0 };
 	
-
 public:
 	/// <summary>
 	/// プレイヤーのコンストラクタ
@@ -36,23 +36,26 @@ public:
 		return current_player_pos_;
 	}
 
-	void setPos(float x, float y) {
-		current_player_pos_.x = x;
-		current_player_pos_.y = y;
-	}
+	/// <summary>
+	/// プレイヤーの位置を設定する
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	void setPos(float x, float y) {}
 
 	/// <summary>
 	/// 左右に移動する為の関数
 	/// </summary>
 	/// <param name="isRight">右に移動するか</param>
-	void move(bool isRight){
-
-		if (isRight) current_player_pos_.x += speed_;
-		else current_player_pos_.x -= speed_;
-	}
+	void move(bool isRight) {}
 
 	/// <summary>
 	/// 射撃用の関数
 	/// </summary>
 	void fire();
+
+	/// <summary>
+	/// 被弾時の処理
+	/// </summary>
+	void Hit(int damage) {}
 };

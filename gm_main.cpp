@@ -185,6 +185,22 @@ void CheckHit()
 		}
 	}
 
+	//プレイヤーの画像サイズを格納する
+	int player_size_x = 0;
+	int player_size_y = 0;
+	GetGraphSize(player.getPlayerGpcHdl(), &player_size_x, &player_size_y);
+	auto playerPos = player.getPos();
+	for (size_t i = 0; i < enemies.size(); i++)
+	{
+		GetGraphSize(enemies[i].getGpcHdl(), &enemy_size_x, &enemy_size_y);
+		auto isHit = usl::rectAngleAndRectAngleHitDetect(enemies[i].getPos(), enemy_size_x, enemy_size_y,
+			playerPos, player_size_x, player_size_y);
+
+		//if (isHit) {
+		//	enemies[i].hit(bulletDamage);
+		//	score++;
+		//}
+	}
 }
 
 /// <summary>
