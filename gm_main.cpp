@@ -21,9 +21,9 @@ tnl::Vector3 back_ground_offset = { 200, 0, 0 };
 
 //ゲーム全体の情報
 int score = 0;
-tnl::Vector3 score_pos = tnl::Vector3(1150, 0, 0);
+tnl::Vector3 score_pos = tnl::Vector3(1125, 25, 0);
 int game_frame_timer = 0;
-tnl::Vector3 timer_pos = tnl::Vector3(1150, 100, 0);
+tnl::Vector3 timer_pos = tnl::Vector3(1125, 0, 0);
 int enemy_count = 0;
 
 //Playerの移動オフセット
@@ -193,6 +193,8 @@ void CheckHit()
 /// </summary>
 void DrawObj()
 {
+	SetFontSize(25);
+
 	//背景の描画処理
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	DrawRectGraph(back_ground_offset.x, back_ground_offset.y, 0, 0, OUTER_BOX_SIZE.x, OUTER_BOX_SIZE.y, back_ground_gpc_hundle[0], false, false);
