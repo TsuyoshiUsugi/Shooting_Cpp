@@ -7,6 +7,7 @@ private:
 	int enemy_gpc_hdl_ = 0;
 	int hp_ = 10;
 	int speed_ = 10;
+	int damage_ = 1;
 	tnl::Vector3 pos_ = { 500, 0, 0 };
 
 	void Death() {
@@ -29,6 +30,9 @@ public:
 		return enemy_gpc_hdl_;
 	}
 
+	int getEnemyDamage() {
+		return damage_;
+	}
 
 	void hit(int damage) {
 		hp_ -= damage;

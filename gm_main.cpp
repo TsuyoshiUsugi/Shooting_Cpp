@@ -198,7 +198,8 @@ void CheckHit()
 			playerPos, player_size_x, player_size_y);
 
 		if (isHit) {
-			//player.Hit(enemies[i].);
+			player.Hit(enemies[i].getEnemyDamage());
+			enemies[i].hit(99999);		//“G‚ğÁ‹‚·‚éˆ—
 		}
 	}
 }
