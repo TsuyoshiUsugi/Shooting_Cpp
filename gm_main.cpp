@@ -196,10 +196,9 @@ void CheckHit()
 		auto isHit = usl::rectAngleAndRectAngleHitDetect(enemies[i].getPos(), enemy_size_x, enemy_size_y,
 			playerPos, player_size_x, player_size_y);
 
-		//if (isHit) {
-		//	enemies[i].hit(bulletDamage);
-		//	score++;
-		//}
+		if (isHit) {
+			//player.Hit(enemies[i].);
+		}
 	}
 }
 

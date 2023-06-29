@@ -36,18 +36,22 @@ public:
 		return current_player_pos_;
 	}
 
+	bool getPlayerStatus() {
+		return isDeath_;
+	}
+
 	/// <summary>
 	/// プレイヤーの位置を設定する
 	/// </summary>
 	/// <param name="x"></param>
 	/// <param name="y"></param>
-	void setPos(float x, float y) {}
+	void setPos(float x, float y);
 
 	/// <summary>
 	/// 左右に移動する為の関数
 	/// </summary>
 	/// <param name="isRight">右に移動するか</param>
-	void move(bool isRight) {}
+	void move(bool isRight);
 
 	/// <summary>
 	/// 射撃用の関数
@@ -57,5 +61,5 @@ public:
 	/// <summary>
 	/// 被弾時の処理
 	/// </summary>
-	void Hit(int damage) {}
+	void Hit(int damage);
 };
